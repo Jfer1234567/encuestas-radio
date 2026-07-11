@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: radio_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: encuestas_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: fer777
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - radio_network
+    # SEGURIDAD Y ESTABILIDAD: Healthcheck
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d encuestas_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: radio_app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/encuestas_db
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=fer777
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    networks:
+      - radio_network
+    depends_on:
+      db:
+        condition: service_healthy
+
+networks:
+  radio_network:
+    driver: bridge
+
+volumes:
+  postgres_data:

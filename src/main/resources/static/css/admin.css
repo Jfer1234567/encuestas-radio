@@ -1,0 +1,236 @@
+:root {
+    --sidebar-width: 260px;
+    --bg-color: #f4f7fa;
+}
+
+body {
+    background-color: var(--bg-color);
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+}
+
+/* =========================================
+   DISEÑO DEL PANEL LATERAL (SIDEBAR)
+   ========================================= */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    padding-top: 2rem;
+    z-index: 1000;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+}
+
+.sidebar .brand {
+    padding: 0 20px;
+    margin-bottom: 2rem;
+}
+
+.logo-sidebar {
+    max-width: 160px;
+    filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.3));
+    transition: transform 0.3s ease;
+}
+
+.logo-sidebar:hover {
+    transform: scale(1.05);
+}
+
+.sidebar-heading {
+    color: #8bb4f6;
+    padding: 0 25px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.sidebar a.nav-link {
+    color: #e2e8f0;
+    padding: 12px 25px;
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+    text-decoration: none;
+}
+
+.sidebar a.nav-link .icon {
+    margin-right: 12px;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.sidebar a.nav-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+    border-left: 4px solid #ffc107;
+}
+
+.sidebar a.nav-link:hover .icon {
+    transform: scale(1.25);
+}
+
+.btn-salir {
+    background: linear-gradient(135deg, #e63946 0%, #d90429 100%);
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-salir:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(217, 4, 41, 0.4) !important;
+}
+
+
+/* =========================================
+   CONTENIDO PRINCIPAL: ENMARCADO EXTERNO
+   ========================================= */
+.main-content {
+    margin-left: var(--sidebar-width);
+    padding: 3rem;
+    min-height: 100vh;
+}
+
+/* Tarjetas (Marco Externo) */
+.card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(13, 110, 253, 0.05);
+    /* Enmarcado externo de 2px azul ligero */
+    border: 2px solid rgba(13, 110, 253, 0.25) !important;
+    overflow: visible;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px rgba(13, 110, 253, 0.12);
+    border-color: rgba(13, 110, 253, 0.5) !important;
+}
+
+/* Ventanas Modales (Marco Externo) */
+.modal-content {
+    border: 2px solid rgba(13, 110, 253, 0.35) !important;
+}
+
+.card-header {
+    background: transparent !important;
+    border-bottom: none;
+    padding: 0 0 1.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.card-header h5 {
+    color: #1e293b;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.icon-box {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    color: white;
+}
+.icon-box.blue { background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3); }
+.icon-box.red { background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%); box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3); }
+
+
+/* =========================================
+   ELEMENTOS INTERNOS: ENMARCADO INTERNO
+   ========================================= */
+
+/* Inputs y Cajas de Texto (Marco Interno) */
+.form-control {
+    background-color: #f8fafc !important;
+    /* Enmarcado interno de 2px azul extra claro */
+    border: 2px solid rgba(13, 110, 253, 0.15);
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #334155;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background-color: #ffffff !important;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15) !important;
+}
+
+.form-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.btn-publicar {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.btn-publicar:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+    color: white;
+}
+
+/* Lista de encuestas activas (Marco Interno) */
+.list-group-item {
+    /* Enmarcado interno de 2px azul claro */
+    border: 2px solid rgba(13, 110, 253, 0.2) !important;
+    border-radius: 16px !important;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+}
+
+.list-group-item:hover {
+    border-color: rgba(13, 110, 253, 0.4) !important;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.08);
+}
+
+/* Tabla de Locutores (Marco Interno) */
+.table-responsive {
+    border: 2px solid rgba(13, 110, 253, 0.15) !important;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Ajustes Generales de Botones y Tablas */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.table-hover tbody tr { transition: all 0.2s ease; }
+.table-hover tbody tr:hover { background-color: rgba(13, 110, 253, 0.03); transform: scale(1.01); }

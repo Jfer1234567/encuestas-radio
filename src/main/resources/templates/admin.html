@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Producción - Radio Allincapac</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+
+<div class="toast-container position-fixed top-0 end-0 p-4" style="z-index: 1055;">
+    <div th:if="${param.exito}" class="toast align-items-center text-bg-success border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex"><div class="toast-body fw-bold">✅ Encuesta creada y publicada en vivo.</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>
+    </div>
+    <div th:if="${param.reiniciado}" class="toast align-items-center text-bg-warning border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex"><div class="toast-body fw-bold">🔄 Los votos han sido reiniciados a cero.</div><button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>
+    </div>
+    <div th:if="${param.editadoUsuario}" class="toast align-items-center text-bg-info text-white border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex"><div class="toast-body fw-bold">✏️ Locutor actualizado correctamente.</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>
+    </div>
+    <div th:if="${param.eliminado != null or param.eliminadoUsuario != null}" class="toast align-items-center text-bg-danger border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex"><div class="toast-body fw-bold">🗑️ Elemento eliminado del sistema.</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>
+    </div>
+</div>
+
+<aside class="sidebar">
+    <div class="brand text-center">
+        <img th:src="@{/img/logo_RVA1.jpg}" alt="Logo Allincapac" class="img-fluid mb-2 logo-sidebar" />
+        <br>
+        <span class="badge bg-warning text-dark px-4 py-1 fw-bold shadow-sm">PRODUCCIÓN</span>
+    </div>
+
+    <nav class="mt-4">
+        <h6 class="sidebar-heading">Herramientas</h6>
+        <a href="#crear-encuesta" class="nav-link"><span class="icon">📝</span> Crear Encuesta</a>
+        <a href="#gestionar-encuestas" class="nav-link"><span class="icon">📊</span> Encuestas Activas</a>
+        <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#modalGestionLocutores"><span class="icon">👥</span> Locutores</a>
+
+        <h6 class="sidebar-heading mt-5">Monitores</h6>
+        <a href="/" target="_blank" class="nav-link"><span class="icon">🌐</span> Vista Público</a>
+        <a href="/dashboard" target="_blank" class="nav-link"><span class="icon">📺</span> Vista TV</a>
+    </nav>
+
+    <div class="position-absolute bottom-0 w-100 p-4">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-danger w-100 fw-bold shadow-lg btn-salir">🚪 Cerrar Sesión</button>
+        </form>
+    </div>
+</aside>
+
+<main class="main-content">
+
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h2 class="fw-bold text-dark mb-0">Panel de Control</h2>
+            <p class="text-muted">Gestiona las encuestas en tiempo real de la radio.</p>
+        </div>
+    </div>
+
+    <section id="crear-encuesta" class="mb-5">
+        <div class="card p-4 p-md-5">
+            <div class="card-header">
+                <div class="icon-box blue">📝</div>
+                <h5>Lanzar Nueva Encuesta</h5>
+            </div>
+            <div class="card-body p-0 pt-3">
+                <form action="/admin/crear" method="POST">
+                    <div class="mb-4">
+                        <label class="form-label">Pregunta o Tema de Debate</label>
+                        <input type="text" name="titulo" class="form-control" placeholder="Ej: ¿Quién debería ser el próximo Alcalde?" required>
+                    </div>
+
+                    <hr class="text-muted opacity-25 my-4">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <label class="form-label mb-0">Opciones para votar</label>
+                        <button type="button" class="btn btn-sm text-primary fw-bold bg-light rounded-pill px-3 shadow-sm border" onclick="agregarOpcion()">
+                            <span class="fs-6">+</span> Agregar otra
+                        </button>
+                    </div>
+
+                    <div class="row" id="contenedor-opciones">
+                        <div class="col-md-6 mb-3"><input type="text" name="opcionesForm" class="form-control" placeholder="Opción 1" required></div>
+                        <div class="col-md-6 mb-3"><input type="text" name="opcionesForm" class="form-control" placeholder="Opción 2" required></div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-publicar shadow-sm">🚀 Publicar y Transmitir en Vivo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="gestionar-encuestas" class="mb-5">
+        <div class="card p-4 p-md-5">
+            <div class="card-header">
+                <div class="icon-box blue">📊</div>
+                <h5>Gestionar Encuestas Activas</h5>
+            </div>
+            <div class="card-body p-0 pt-3">
+
+                <div th:if="${encuestas.isEmpty()}" class="p-5 text-center text-muted bg-light rounded-4 border">
+                    <span class="fs-1 d-block mb-2">📭</span>
+                    <h6 class="fw-bold">No hay encuestas corriendo</h6>
+                    <p class="small mb-0">Usa el panel superior para lanzar una nueva pregunta en vivo.</p>
+                </div>
+
+                <ul class="list-group list-group-flush border-0" th:if="${!encuestas.isEmpty()}">
+                    <li th:each="encuesta : ${encuestas}" class="list-group-item p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div>
+                            <h6 class="fw-bold mb-2 text-dark" style="font-size: 1.1rem;" th:text="${encuesta.titulo}">Título</h6>
+                            <span th:if="${!encuesta.activa}" class="badge rounded-pill bg-warning text-dark px-3 py-2 shadow-sm">⏸️ Votación Cerrada</span>
+                            <span th:if="${encuesta.activa}" class="badge rounded-pill bg-success px-3 py-2 shadow-sm">▶️ En Vivo</span>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap justify-content-end">
+                            <form action="/admin/estado" method="POST">
+                                <input type="hidden" name="encuestaId" th:value="${encuesta.id}">
+                                <button type="submit" th:class="${encuesta.activa ? 'btn btn-outline-secondary btn-sm rounded-pill fw-bold px-3' : 'btn btn-primary btn-sm rounded-pill fw-bold px-3'}" th:text="${encuesta.activa ? '⏸️ Pausar' : '▶️ Abrir'}"></button>
+                            </form>
+                            <a th:href="@{/admin/reportes/excel/{id}(id=${encuesta.id})}" class="btn btn-light text-success btn-sm rounded-pill fw-bold px-3 border shadow-sm">📊 Excel</a>
+                            <a th:href="@{/admin/reportes/pdf/{id}(id=${encuesta.id})}" class="btn btn-light text-danger btn-sm rounded-pill fw-bold px-3 border shadow-sm">📄 PDF</a>
+                            <form action="/admin/reiniciar" method="POST" onsubmit="return confirm('¿Seguro que quieres reiniciar los votos a cero? Esto no se puede deshacer.');">
+                                <input type="hidden" name="encuestaId" th:value="${encuesta.id}">
+                                <button type="submit" class="btn btn-light text-warning btn-sm rounded-pill fw-bold px-3 border shadow-sm">🔄 Reiniciar</button>
+                            </form>
+                            <form action="/admin/eliminar" method="POST" onsubmit="return confirm('¿Seguro de eliminar toda la encuesta?');">
+                                <input type="hidden" name="encuestaId" th:value="${encuesta.id}">
+                                <button type="submit" class="btn btn-outline-dark btn-sm rounded-pill fw-bold px-3">🗑️ Eliminar</button>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div class="modal fade" id="modalGestionLocutores" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header bg-info text-white border-0 p-4">
+                <h5 class="modal-title fw-bold">👥 Gestión de Locutores y Accesos</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 bg-light">
+
+                <form action="/admin/locutores/crear" method="POST" class="mb-4 bg-white p-3 rounded-3 shadow-sm border">
+                    <div class="row align-items-end">
+                        <div class="col-md-4 mb-2">
+                            <label class="form-label fw-bold text-secondary small">Nuevo Usuario:</label>
+                            <input type="text" name="username" class="form-control" placeholder="Ej: luis_radio" required>
+                        </div>
+                        <div class="col-md-5 mb-2">
+                            <label class="form-label fw-bold text-secondary small">Contraseña:</label>
+                            <input type="password" name="password" class="form-control" placeholder="Escribe una contraseña segura" required>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <button type="submit" class="btn btn-info text-white w-100 fw-bold shadow-sm" style="border-radius: 12px; padding: 14px;">➕ Crear Locutor</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="table-responsive bg-white rounded-3 shadow-sm border p-2">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Rol</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="usuario : ${usuarios}">
+                            <td class="fw-bold" th:text="${usuario.username}">usuario</td>
+                            <td><span class="badge bg-secondary">ADMIN</span></td>
+                            <td class="text-end">
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-primary fw-bold rounded-pill px-3"
+                                        th:data-id="${usuario.id}"
+                                        th:data-username="${usuario.username}"
+                                        onclick="abrirModalEditar(this)">
+                                    ✏️ Editar
+                                </button>
+
+                                <form th:if="${usuario.username != 'fernando'}" th:action="@{/admin/locutores/eliminar}" method="post" class="d-inline" onsubmit="return confirm('¿Seguro que deseas eliminar este locutor?');">
+                                    <input type="hidden" name="id" th:value="${usuario.id}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger fw-bold rounded-pill px-3">🗑️ Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEditarLocutor" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header bg-primary text-white border-0 p-4">
+                <h5 class="modal-title fw-bold">✏️ Editar Credenciales</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/admin/locutores/editar" method="POST">
+                <div class="modal-body p-4">
+                    <input type="hidden" name="id" id="edit-id">
+                    <div class="mb-3">
+                        <label class="form-label text-secondary">Nombre de Usuario:</label>
+                        <input type="text" name="username" id="edit-username" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-secondary">Nueva Contraseña:</label>
+                        <input type="password" name="password" class="form-control" placeholder="Dejar en blanco para no cambiarla">
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 bg-light">
+                    <button type="button" class="btn btn-outline-secondary fw-bold rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary fw-bold rounded-pill px-4">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin.js}"></script>
+</body>
+</html>
