@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class AuthController {
 
     @GetMapping("/login")
-    public String mostrarLogin() {
-        // Redirige al archivo login.html
-        return "login";
+    public String login() {
+        return "login"; // Esto buscará automáticamente el archivo 'login.html' en tu carpeta templates
     }
 }

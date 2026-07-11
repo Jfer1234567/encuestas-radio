@@ -1,43 +1,37 @@
-package com.encuestas.config;
+package com.tuproyecto.encuestas.config; // <-- ¡Cámbialo por tu package real!
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                // 1. Reglas de protección de rutas
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/dashboard", "/api/votar", "/ws-encuestas/**", "/css/**", "/js/**", "/img/**").permitAll()
-
-                        // ¡AQUÍ ESTÁ LA CORRECCIÓN!
-                        // Agregamos "/admin" exacto y le decimos que cualquier otra ruta pida login
-                        .requestMatchers("/admin", "/admin/**").authenticated()
+                        // Permite que carguen los estilos e imágenes en la pantalla de login
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/img/**").permitAll()
+                        // Exige login para TODO lo demás (incluido el index)
                         .anyRequest().authenticated()
                 )
+                // 2. Configuración de la pantalla de login
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/admin", true)
+                        .defaultSuccessUrl("/", true) // Redirige al index después de loguearse con éxito
                         .permitAll()
                 )
+                // 3. Configuración del botón de cerrar sesión
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 );
 
         return http.build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
